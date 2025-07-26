@@ -18,10 +18,10 @@ function App() {
     timeTaken: 0
   });
 
-  const handleRegistration = (name: string) => {
+  const handleRegistration = (email: string) => {
     setGameState(prev => ({
       ...prev,
-      user: { name, level: 'new-to-ads' },
+      user: { name: email.split('@')[0], email, level: 'new-to-ads' },
       currentScreen: 'selection'
     }));
   };
@@ -98,6 +98,7 @@ function App() {
             score={gameState.score}
             totalQuestions={totalQuestions}
             timeTaken={gameState.timeTaken}
+            userEmail={gameState.user.email}
             onRestart={handleRestart}
           />
         );
