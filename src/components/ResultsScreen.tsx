@@ -1,7 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
-import { Trophy, RotateCcw } from 'lucide-react';
+import React, { useEffect } from 'react';
 // Assuming saveCatalogueImageResult is still needed, keep the import
 // import { saveCatalogueImageResult } from '../lib/supabase'; 
 
@@ -20,8 +19,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
   userEmail,
   onRestart
 }) => {
-  const isSuccess = score > 0; // Keeping original logic for success based on score > 0
-  const percentage = Math.round((score / totalQuestions) * 100);
+  // totalQuestions is kept for interface compatibility but not used in weighted scoring
+  const isSuccess = score > 0; // Success based on weighted score > 0
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -66,16 +65,13 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
   }, [score, userEmail]); // Dependencies ensure it runs when score or email changes
 
   // Added a countdown for automatic restart, similar to the first Results component
-  const [countdown, setCountdown] = useState(5);
   useEffect(() => {
+    let countdown = 5;
     const interval = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          onRestart();
-          return 0;
-        }
-        return prev - 1;
-      });
+      countdown--;
+      if (countdown <= 0) {
+        onRestart();
+      }
     }, 1000);
     return () => clearInterval(interval);
   }, [onRestart]);
@@ -90,7 +86,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
-      
+
       {/* Conditional Content */}
       {score > 0 ? (
         <div className="relative z-10 flex flex-col items-center mt-[230px]">
@@ -103,11 +99,11 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             <h1 className="text-[70px] font-extrabold text-white mb-2 leading-[1.1]">
               CONGRATULATIONS!
             </h1>
-            <p className="text-white text-[60px] mb-1 leading-[1.1]">You got!</p>
+            <p className="text-white text-[60px] mb-1 leading-[1.1]">You scored!</p>
             <p className="text-white text-[96px] font-bold mb-1 leading-none">
-              {score}/{totalQuestions}
+              {score}/10
             </p>
-            <p className="text-white text-[60px] leading-[1.1]">Correct answers!</p>
+            <p className="text-white text-[60px] leading-[1.1]">Points!</p>
             {timeTaken > 0 && (
               <p className="text-white text-[40px] mt-4">
                 Time taken: {formatTime(timeTaken)}
@@ -117,10 +113,10 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
         </div>
       ) : (
         <div className="relative z-10 flex flex-col items-center mt-[230px]">
-        
+
         </div>
       )}
     </div>
   );
-  
+
 };

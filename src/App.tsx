@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GameState } from './types';
 import { RegistrationScreen } from './components/RegistrationScreen';
 import { SelectionScreen } from './components/SelectionScreen';
@@ -17,6 +17,17 @@ function App() {
     score: 0,
     timeTaken: 0
   });
+
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+  
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
 
   const handleRegistration = (email: string) => {
     setGameState(prev => ({
@@ -41,6 +52,7 @@ function App() {
       currentScreen: 'matching'
     }));
   };
+
 
   const handleMatchingComplete = (score: number, timeTaken: number = 0) => {
     setGameState(prev => ({
@@ -107,6 +119,7 @@ function App() {
         return null;
     }
   };
+  
 
   return <div className="App">{renderCurrentScreen()}</div>;
 }

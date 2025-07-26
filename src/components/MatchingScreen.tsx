@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
+import { calculateWeightedScore } from "../utils/scoring"
 
 interface MatchingScreenProps {
   leftItems: string[]
@@ -254,9 +255,18 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
   }
 
   const handleSubmit = () => {
-    const score = Object.keys(matches).length // All matches in the matches object are correct
+    const correctAnswers = Object.keys(matches).length // All matches in the matches object are correct
     const timeTaken = 120 - timeLeft
-    onComplete(score, timeTaken)
+    
+    // Calculate weighted score using the new scoring system
+    const scoreResult = calculateWeightedScore({
+      correctAnswers,
+      totalQuestions: leftItems.length,
+      timeTaken,
+      timeLimit: 120
+    });
+    
+    onComplete(scoreResult.totalScore, timeTaken)
   }
 
   const formatTime = (seconds: number) => {
