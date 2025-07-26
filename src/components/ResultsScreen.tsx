@@ -88,48 +88,39 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }} // Dynamically set background image
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       />
-      <div className="relative z-10 flex flex-col items-center mt-[230px]"> {/* Adjusted margin-top */}
-        {/* Trophy or Better Luck Image */}
-        <img
-          src={isSuccess ? '/congrats.png' : '/luck.png'} // Use isSuccess for image logic
-          alt={isSuccess ? 'Congratulations' : 'Better luck'}
-          className="w-[700px] mb-0" // Image size from the first component
-        />
-
-        <div className="mt-[70px]"> {/* Margin-top for text block */}
-          {isSuccess ? (
-            <>
-              <h1 className="text-[70px] font-extrabold text-white mb-2 leading-[1.1]">
-                CONGRATULATIONS!
-              </h1>
-              <p className="text-white text-[60px] mb-1 leading-[1.1]">You got!</p>
-              <p className="text-white text-[96px] font-bold mb-1 leading-none">
-                {score}/{totalQuestions}
-              </p>
-              <p className="text-white text-[60px] leading-[1.1]">Correct answers!</p>
-            </>
-          ) : (
-            <>
-              <h1 className="text-[70px] font-extrabold text-white mb-2 leading-tight">
-                Better luck next time!
-              </h1>
-              <p className="text-white text-[96px] font-bold mb-1 leading-none">
-                {score}/{totalQuestions}
-              </p>
-            </>
-          )}
-          {/* Display time taken if available and score is not zero */}
-          {timeTaken > 0 && (score > 0 || totalQuestions === 0) && (
-            <p className="text-white text-[40px] mt-4">
-              Time taken: {formatTime(timeTaken)}
+      
+      {/* Conditional Content */}
+      {score > 0 ? (
+        <div className="relative z-10 flex flex-col items-center mt-[230px]">
+          <img
+            src="/congrats.png"
+            alt="Congratulations"
+            className="w-[700px] mb-0"
+          />
+          <div className="mt-[70px]">
+            <h1 className="text-[70px] font-extrabold text-white mb-2 leading-[1.1]">
+              CONGRATULATIONS!
+            </h1>
+            <p className="text-white text-[60px] mb-1 leading-[1.1]">You got!</p>
+            <p className="text-white text-[96px] font-bold mb-1 leading-none">
+              {score}/{totalQuestions}
             </p>
-          )}
+            <p className="text-white text-[60px] leading-[1.1]">Correct answers!</p>
+            {timeTaken > 0 && (
+              <p className="text-white text-[40px] mt-4">
+                Time taken: {formatTime(timeTaken)}
+              </p>
+            )}
+          </div>
         </div>
-
-    
-      </div>
+      ) : (
+        <div className="relative z-10 flex flex-col items-center mt-[230px]">
+        
+        </div>
+      )}
     </div>
   );
+  
 };

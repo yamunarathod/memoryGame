@@ -33,8 +33,8 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect }) =>
           className={`w-full py-4 px-6 rounded-lg text-[60px] font-bold transition-colors duration-200 
             ${
               selected === 'new-to-ads'
-                ? 'bg-[#4216EF] text-white'
-                : 'border border-blue-500 text-[#00B5DB] hover:bg-green-700 text-black'
+                ? 'bg-[#1005e3] text-white'
+                : 'border border-blue-500 text-[#00B5DB] hover:bg-green-700'
             }`}
         >
           New to Ads
@@ -45,17 +45,17 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect }) =>
           className={`w-full py-4 px-6 rounded-lg text-[60px] font-bold transition-colors duration-200 
             ${
               selected === 'ad-expert'
-                ? 'bg-[#4216EF] text-white'
-                : 'border border-blue-500 text-[#00B5DB] hover:bg-purple-700 text-black'
+                ? 'bg-[#1005e3] text-white'
+                : 'border border-blue-500 text-[#00B5DB] hover:bg-purple-700'
             }`}
         >
           Ad-Expert
         </button>
       </div>
 
-      {/* Submit Button fixed at bottom */}
-      {selected && (
-        <div className="pb-12">
+      {/* Submit Button placeholder — maintains layout space */}
+      <div className="h-[150px] flex items-center justify-center w-full pb-20">
+        {selected && (
           <button
             type="submit"
             onClick={handleSubmit}
@@ -63,8 +63,8 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({ onSelect }) =>
           >
             Submit
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

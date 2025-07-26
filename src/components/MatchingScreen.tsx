@@ -28,13 +28,13 @@ const DragPreview: React.FC<DragPreviewProps> = ({ item, position, isVisible }) 
   if (!isVisible) return null
   return (
     <div
-      className="fixed pointer-events-none z-50 bg-white p-6 rounded-[15px] border-4 border-[#4A5FCC] shadow-lg transform -translate-x-1/2 -translate-y-1/2" // Increased padding, border, and roundedness
+      className="fixed pointer-events-none z-50 bg-white p-3 rounded-lg border-2 border-[#4A5FCC] shadow-lg transform -translate-x-1/2 -translate-y-1/2"
       style={{
         left: position.x,
         top: position.y,
       }}
     >
-      <div className="text-[#4A5FCC] text-3xl font-bold">{item}</div> {/* Increased font size and boldness */}
+      <div className="text-[#4A5FCC] text-lg font-bold">{item}</div>
     </div>
   )
 }
@@ -116,8 +116,9 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
       if (isCorrect) {
         setMatches((prev) => ({ ...prev, [leftIndex]: draggedItem }))
         setShowFeedback((prev) => ({ ...prev, [leftIndex]: "correct" }))
-        // Remove the matched item from shuffled items
-        setShuffledRightItems((prev) => prev.filter((_, index) => index !== draggedIndex))
+        // Only remove the item from the right side if it hasn't been matched yet
+        // This ensures the block size on the left doesn't change due to removal
+        setShuffledRightItems((prev) => prev.filter((_, index) => index !== draggedIndex));
       } else {
         setShowFeedback((prev) => ({ ...prev, [leftIndex]: "wrong" }))
         // Clear feedback after 1 second
@@ -212,7 +213,7 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
         if (isCorrect) {
           setMatches((prev) => ({ ...prev, [leftIndex]: touchDragState.draggedItem! }))
           setShowFeedback((prev) => ({ ...prev, [leftIndex]: "correct" }))
-          // Remove the matched item from shuffled items
+          // Only remove the item from the right side if it hasn't been matched yet
           setShuffledRightItems((prev) => prev.filter((_, index) => index !== touchDragState.draggedIndex))
         } else {
           setShowFeedback((prev) => ({ ...prev, [leftIndex]: "wrong" }))
@@ -268,17 +269,18 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center justify-center px-8 py-8"
+      className="min-h-screen w-full flex flex-col items-center justify-between p-4" // Use min-h-screen for full height
       style={{
         backgroundImage: 'url("/s2.png")', // Background image added
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundAttachment: 'fixed', // Keep background fixed when scrolling
       }}
     >
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12 mt-[400px] w-full max-w-7xl">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-[650px] mb-4 w-full max-w-5xl"> {/* Increased gap for vertical spacing */}
         {/* Left Column - Questions with Answers */}
-        <div className="bg-white rounded-[15px] border-4 border-[#4A5FCC] p-8 shadow-[inset_10px_0px_10px_-5px_rgba(0,0,0,0.1)] flex flex-col justify-evenly">
+        <div className="bg-white rounded-lg border-2 border-[#4A5FCC] p-4 shadow-[inset_5px_0px_5px_-2px_rgba(0,0,0,0.1)] flex flex-col justify-evenly">
           {leftItems.map((item, index) => (
             <div key={index} className="group flex-grow flex-shrink-0">
               <div
@@ -288,7 +290,7 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
                   matches[index] ? `Matched with: ${matches[index]}` : "Available for matching"
                 }`}
                 aria-dropeffect={unifiedDragState.isDragging ? "move" : "none"}
-                className={`py-6 transition-all duration-200 ${
+                className={`py-4 transition-all duration-200 ${ // Consistent padding
                   showFeedback[index] === "wrong"
                     ? "bg-red-50"
                     : touchDragState.hoveredDropZone === index
@@ -298,23 +300,22 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, index)}
               >
-                {/* Kept truncation for left items */}
-                <p className="text-[#4A5FCC] text-3xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                <p className="text-[#4A5FCC] text-lg font-bold">
                   {item}
                 </p>
                 {matches[index] && (
-                  <p className="text-[#4A5FCC] text-3xl font-normal mt-3 pl-5 border-l-4 border-[#4A5FCC] whitespace-nowrap overflow-hidden text-ellipsis">
+                  <p className="text-[#4A5FCC] text-base font-normal mt-2 pl-3 border-l-2 border-[#4A5FCC]">
                     {matches[index]}
                   </p>
                 )}
               </div>
-              {index < leftItems.length - 1 && <hr className="border-[#E0E6ED] my-3" />}
+              {index < leftItems.length - 1 && <hr className="border-[#E0E6ED] my-3" />} {/* Increased vertical gap */}
             </div>
           ))}
         </div>
 
         {/* Right Column - Answer Options */}
-        <div className="space-y-2">
+        <div className="space-y-4"> {/* Increased vertical gap */}
           {shuffledRightItems.map((item, index) => (
             <div
               key={index}
@@ -328,10 +329,9 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
               onTouchCancel={handleTouchCancel}
-              className="bg-white border-4 border-[#4A5FCC] rounded-[15px] px-8 py-6 text-[#4A5FCC] text-3xl font-bold cursor-move hover:border-[#3d1df3] hover:shadow-lg transition-all duration-150 shadow-[10px_0px_10px_-5px_rgba(0,0,0,0.1)]"
+              className="bg-white border-2 border-[#4A5FCC] rounded-lg px-4 py-3 text-[#4A5FCC] text-lg font-bold cursor-move hover:border-[#3d1df3] hover:shadow-md transition-all duration-150 shadow-[5px_0px_5px_-2px_rgba(0,0,0,0.1)]"
               style={{ touchAction: "none" }}
             >
-              {/* Removed text truncation for right items */}
               <p>{item}</p>
             </div>
           ))}
@@ -339,13 +339,13 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col items-center gap-8 mt-12">
+      <div className="flex flex-col items-center gap-4 mb-40">
         {/* Navigation and Button */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           <button
             onClick={handleSubmit}
             disabled={!isComplete}
-            className={`px-16 py-6 rounded-full font-bold text-3xl transition-all duration-200 ${
+            className={`w-[300px] h-[80px] rounded-full font-bold text-4xl transition-all duration-200 ${
               isComplete
                 ? "bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5B5BF7] hover:to-[#7C3AED] text-white shadow-lg transform hover:scale-105"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -357,15 +357,15 @@ export const MatchingScreen: React.FC<MatchingScreenProps> = ({ leftItems, right
       </div>
 
       {/* Timer at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 py-4">
+      <div className="fixed bottom-0 left-0 right-0 py-2">
         <div
-          className="absolute bottom-10 left-0 w-full px-10 z-10 flex items-center justify-center gap-4 text-[70px] font-bold text-white"
+          className="absolute bottom-5 left-0 w-full px-5 z-10 flex items-center justify-center gap-2 text-4xl font-bold text-white"
           style={{
             background:
               'linear-gradient(to right, #30c5e5 0%, rgba(48,197,229,0.05) 45%, rgba(6,50,185,0.05) 55%, #0632b9 100%)',
           }}
         >
-          <img src="/timer.png" alt="Timer" className="w-[120px] h-[120px]" />
+          <img src="/timer.png" alt="Timer" className="w-16 h-16" />
           <span>{formatTime(timeLeft)}</span>
         </div>
       </div>
