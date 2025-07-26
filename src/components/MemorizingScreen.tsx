@@ -12,7 +12,7 @@ export const MemorizingScreen: React.FC<MemorizingScreenProps> = ({
   content,
   onComplete,
 }) => {
-  const [timeLeft, setTimeLeft] = useState(90);
+  const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
     const timer = setInterval(() => {
