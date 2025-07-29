@@ -58,7 +58,7 @@ export const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ onSubmit
       <div className="p-8 w-full max-w-md">
         <div className="text-center">
           <h1 className="text-[60px] font-bold text-[#00B5DB] text-center mb-12">
-            Ads Memory
+            Ads Memory Game
           </h1>
           
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-20">
@@ -86,7 +86,7 @@ export const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ onSubmit
               type="submit"
               className="w-[551px] h-[128px] text-[60px] font-semibold text-white bg-[#4126FF] rounded-full hover:bg-[#321AD9] shadow-md transition"
             >
-              Submit
+              Play
             </button>
           </form>
         </div>
